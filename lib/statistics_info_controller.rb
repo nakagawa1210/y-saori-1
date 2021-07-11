@@ -1,5 +1,6 @@
 require 'csv'
-
+require 'rubygems'
+require 'zip'
 require_relative '../lib/statistics_info'
 
 class StatisticsInfoController
@@ -51,6 +52,17 @@ class StatisticsInfoController
 
     def download_table(create_single_year_csv_file, create_multiple_years_csv_file, create_graph)
         #downlod
+        folder = "stuff_to_zip"
+        input_filenames = create_single_year_csv_file + create_multiple_years_csv_file + create_graph
+
+        zipfile_name = "archive.zip"
+
+        Zip::File.open(zipfile_name, create: true) do |zipfile|
+            input_filenames.each do |filename|
+                zipfile.add(filename, File.join(folder, filename))
+            end
+        end
+        return zipfile_name
     end
 
     def create_single_year_table(product_number,product_name,group_name,
